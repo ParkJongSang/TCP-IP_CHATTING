@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "user.h": "c",
+        "clientfunction.h": "c",
+        "typeinfo": "c"
+    },
+    "C_Cpp.errorSquiggles": "Disabled"
+}
