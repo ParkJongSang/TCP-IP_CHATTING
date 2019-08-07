@@ -660,7 +660,7 @@ int main(void)
     {
         close(clientList[i].fd);
     }
-
+    Queue_Free();
     close(listenFD);
     return 0;
 }

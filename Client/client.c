@@ -537,6 +537,7 @@ int main(void)
         }
     }
     printf("Close This Client.\n");
+    Queue_Free();
     close(connectFD);
     return 0;
 }
