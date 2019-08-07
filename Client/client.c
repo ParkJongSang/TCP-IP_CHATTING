@@ -11,6 +11,7 @@ int main(void)
     int isCommand = 1;
     int retryCnt = 0;
     int retryFlag = 0;
+    int connectRetryCnt = 0;
     int connectFD;
     struct timeval timeout;
     fd_set reads;
@@ -33,12 +34,19 @@ int main(void)
     connectSocket.sin_port = htons(10000);
     connectFD = socket(AF_INET, SOCK_STREAM, 0);
     fcntl(connectFD, F_SETFL, O_NONBLOCK);
-    while (connect(connectFD, (struct sockaddr *)&connectSocket, sizeof(connectSocket)) == -1)
+    while (connect(connectFD, (struct sockaddr *)&connectSocket, sizeof(connectSocket)) == -1 && connectRetryCnt < 3)
     {
         if (errno == EISCONN)
             break;
         perror("[CONNECT]");
+        connectRetryCnt += 1;
         sleep(1);
+    }
+
+    if(connectRetryCnt >= 3)
+    {
+        printf("You Cannot Connect to Server Because Some Error is Occured.\n");
+        return -1;
     }
 
     ClientInit(10);

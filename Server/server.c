@@ -7,6 +7,7 @@
 
 int main(void)
 {
+    int curClientCnt = 0;
     int connectFD, listenFD;
     bool reuseFlag = true;
     struct timeval timeout;
@@ -126,6 +127,10 @@ int main(void)
 
         if (FD_ISSET(listenFD, &reads))
         {
+            if(curClientCnt >= 10){
+                printf("MAX CLIENT.\n");
+                continue;
+            }
             socklen_t addrSize = sizeof(connectSocket);
             while ((connectFD = accept(listenFD, (struct sockaddr *)&connectSocket, &addrSize)) < 0)
             {
@@ -140,6 +145,7 @@ int main(void)
                 printf("FCNTL ERROR.\n");
             }
             printf("[CONNECTED] : UNKNOWN CLIENT\n");
+            curClientCnt += 1;
             fdNum -= 1;
         }
 
@@ -455,6 +461,7 @@ int main(void)
                         {
                             printf("DEL FAIL.\n");
                         }
+                        curClientCnt -= 1;
                     }
                     else if (msgType == PACKET_TYPE_ALRAM_ACK)
                     {
@@ -467,6 +474,7 @@ int main(void)
                     else if (msgType == PACKET_TYPE_EXIT_ACK)
                     {
                         Server_Del_Client_List(clientList[i].fd, clientList[i].name);
+                        curClientCnt -= 1;
                     }
                     else if (msgType == PACKET_TYPE_PING_ACK)
                     {

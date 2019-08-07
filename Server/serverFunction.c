@@ -631,11 +631,11 @@ int Server_Del_Client_List(int sockFd, char *client)
     return SERVER_SUCCESS;
 }
 
-int Server_Check_Packet_Time_Over(long curTime){
+void Server_Check_Packet_Time_Over(long curTime){
     Node *cursor = NULL;
     Node *temp = NULL;
+    int isPop = 0;
     cursor = MallocQ -> head;
-    int ackType = -1;
     while(cursor != NULL){
         if(curTime - (cursor -> time) > 5){
             temp = Queue_front();
@@ -652,8 +652,14 @@ int Server_Check_Packet_Time_Over(long curTime){
             }
             printf("[%d]TimeOut PACKET OUT.\n", temp -> type);
             Queue_Pop_Front();
+            isPop = 1;
         }else{
-            cursor = cursor -> next;
+            if(isPop == 1){
+                cursor = cursor -> next;
+                cursor ->time = curTime;
+            }else{
+                break;
+            }
         }
     }
 

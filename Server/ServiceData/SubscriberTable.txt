@@ -2,3 +2,4 @@ Fenix
 Kerrigun
 Zeratul
 JimRaynor
+King

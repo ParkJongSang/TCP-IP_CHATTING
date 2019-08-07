@@ -11,7 +11,7 @@
 #include <time.h>
 
 #define SERVER_SUCCESS  0
-#define SERVER_FAIL     -1
+#define SERVER_FAIL -1
 #define SERVER_MAX_CLIENT_LIST_SIZE 10
 
 typedef struct connectedClient{
@@ -52,7 +52,7 @@ int Server_Del_Call_Forwarding_Ack(int sockFd, char *client);
 int Server_Search_Client(char* client);
 int Server_Add_Client_List(int sockFd, char *client, long time);
 int Server_Del_Client_List(int sockFd, char *client);
-int Server_Check_Packet_Time_Over(long curTime);
+void Server_Check_Packet_Time_Over(long curTime);
 int Server_Check_Client_Time_Over(long curTime);
 
 void Server_Siging_Handler(int signo);
