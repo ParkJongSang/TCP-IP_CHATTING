@@ -40,7 +40,6 @@ int main(void)
         return -1;
     }
     signal(SIGINT, Server_Siging_Handler);
-    //signal(SIGSEGV, Server_Siging_Handler);
     memset(&listenSocket, 0x00, sizeof(listenSocket));
     memset(&body, 0x00, sizeof(body));
     memset(&head, 0x00, sizeof(head));
@@ -395,8 +394,6 @@ int main(void)
                     }
                     else if (msgType == PACKET_TYPE_STR_REQ)
                     {
-
-                        printf("send Chat Req\n");
                         int curChatRoom = clientList[i].chatRoom;
                         int curClientInChatRoom = chatRoomList[curChatRoom][0];
                         int j = 0;
@@ -406,21 +403,23 @@ int main(void)
                         if ((letteringIdx = Lettering_Search_List(client)) >= 0)
                         {
                             sprintf(msg, "[%s]", lettering[letteringIdx].dstName);
-                            printf("Lettering!!\n");
                         }
                         strcat(msg, " : ");
                         strcat(msg, body.str);
                         for (j = 1; j <= curClientInChatRoom; j++)
                         {
                             if (clientList[i].fd != chatRoomList[curChatRoom][j])
-                            {
+                            {   
                                 Server_Chat_Request(chatRoomList[curChatRoom][j], head.srcName, msg);
                             }
                         }
                     }
                     else if (msgType == PACKET_TYPE_STR_ACK)
                     {
-                        Queue_Pop_Front();
+                        if(MallocQ->head != NULL && MallocQ->head->type == msgType)
+                        {
+                            Queue_Pop_Front();
+                        }
                         
                         int ackClientIdx = Server_Search_Client(head.dstName);
                         if (ackClientIdx < 0)
@@ -459,7 +458,8 @@ int main(void)
                     }
                     else if (msgType == PACKET_TYPE_ALRAM_ACK)
                     {
-                        if (Queue_front()->type == PACKET_TYPE_ALRAM_ACK)
+                        
+                        if(MallocQ->head != NULL && MallocQ->head->type == msgType)
                         {
                             Queue_Pop_Front();
                         }
@@ -470,7 +470,7 @@ int main(void)
                     }
                     else if (msgType == PACKET_TYPE_PING_ACK)
                     {
-                        if (clientList[i].isPing == 1 && Queue_front()->type == PACKET_TYPE_PING_ACK)
+                        if (clientList[i].isPing == 1 && MallocQ->head != NULL && Queue_front()->type == PACKET_TYPE_PING_ACK)
                         {
                             clientList[i].isPing = 0;
                             Queue_Pop_Front();

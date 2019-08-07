@@ -239,14 +239,14 @@ int main(void)
             if (msgType == PACKET_TYPE_SIGN_UP_ACK)
             {
                 printf("recv SingUp Ack\n");
-                if (MallocQ->head->type == msgType)
+                if (MallocQ->head != NULL && MallocQ->head->type == msgType)
                 {
                     Queue_Pop_Front();
                 }
             }
             else if (msgType == PACKET_TYPE_STR_ACK)
             {
-                if (MallocQ->head->type == msgType)
+                if (MallocQ->head != NULL && MallocQ->head->type == msgType)
                 {
                     Queue_Pop_Front();
                 }
@@ -254,7 +254,7 @@ int main(void)
             else if (msgType == PACKET_TYPE_EXIT_ACK)
             {
                 printf("recv Exit Ack.\n");
-                if (MallocQ->head->type == msgType)
+                if (MallocQ->head != NULL && MallocQ->head->type == msgType)
                 {
                     Queue_Pop_Front();
                 }
@@ -265,14 +265,14 @@ int main(void)
             else if (msgType == PACKET_TYPE_LETTERING_ADD_ACK)
             {
                 printf("recv LETTERING Ack\n");
-                if (MallocQ->head->type == msgType)
+                if (MallocQ->head != NULL && MallocQ->head->type == msgType)
                 {
                     Queue_Pop_Front();
                 }
             }
             else if (msgType == PACKET_TYPE_LETTERING_DEL_ACK)
             {
-                if (MallocQ->head->type == msgType)
+                if (MallocQ->head != NULL && MallocQ->head->type == msgType)
                 {
                     Queue_Pop_Front();
                 }
@@ -280,14 +280,14 @@ int main(void)
             else if (msgType == PACKET_TYPE_CALL_FORWARDING_ADD_ACK)
             {
                 printf("recv Forwarding Ack\n");
-                if (MallocQ->head->type == msgType)
+                if (MallocQ->head != NULL && MallocQ->head->type == msgType)
                 {
                     Queue_Pop_Front();
                 }
             }
             else if (msgType == PACKET_TYPE_CALL_FORWARDING_DEL_ACK)
             {
-                if (MallocQ->head->type == msgType)
+                if (MallocQ->head != NULL && MallocQ->head->type == msgType)
                 {
                     Queue_Pop_Front();
                 }
@@ -295,19 +295,19 @@ int main(void)
             else if (msgType == PACKET_TYPE_REJECT_CALL_ADD_ACK)
             {
                 printf("recv Reject Ack\n");
-                if (MallocQ->head->type == msgType)
+                if (MallocQ->head != NULL && MallocQ->head->type == msgType)
                 {
                     Queue_Pop_Front();
                 }
             }
-            else if (msgType == PACKET_TYPE_REJECT_CALL_DEL_ACK)
+            else if (MallocQ->head != NULL && msgType == PACKET_TYPE_REJECT_CALL_DEL_ACK)
             {
                 if (MallocQ->head->type == msgType)
                 {
                     Queue_Pop_Front();
                 }
             }
-            else if (msgType == PACKET_TYPE_CONN_ACK)
+            else if (MallocQ->head != NULL && msgType == PACKET_TYPE_CONN_ACK)
             {
                 printf("recv Connect Ack\n");
                 if (MallocQ->head->type == msgType)
@@ -329,7 +329,7 @@ int main(void)
             else if (msgType == PAKCET_TYPE_CREATE_CHATROOM_ACK)
             {
                 printf("recv Create ChatRoom Ack\n");
-                if (MallocQ->head->type == msgType)
+                if (MallocQ->head != NULL && MallocQ->head->type == msgType)
                 {
                     Queue_Pop_Front();
                 }
@@ -339,7 +339,7 @@ int main(void)
             else if (msgType == PACKET_TYPE_EXIT_CHATROOM_ACK)
             {
                 printf("recv Exit Ack\n");
-                if (MallocQ->head->type == msgType)
+                if (MallocQ->head != NULL && MallocQ->head->type == msgType)
                 {
                     Queue_Pop_Front();
                 }
@@ -356,7 +356,7 @@ int main(void)
             else if (msgType == PACKET_TYPE_INVITE_ACK)
             {
                 printf("recv Invite Ack\n");
-                if (MallocQ->head->type == msgType)
+                if (MallocQ->head != NULL && MallocQ->head->type == msgType)
                 {
                     Queue_Pop_Front();
                 }

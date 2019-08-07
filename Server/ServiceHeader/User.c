@@ -17,7 +17,7 @@ int User_Init_List()
     while (fgets(tmpStr, sizeof(tmpStr), fp) != NULL)
     {
         int len = strlen(tmpStr);
-        for (int i = 0; i < len; i++)
+        for (i = 0; i < len; i++)
         {
             if (tmpStr[i] == '\n')
             {
