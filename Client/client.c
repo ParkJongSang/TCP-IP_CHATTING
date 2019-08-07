@@ -373,7 +373,8 @@ int main(void)
                     printf("[%s] Invite Success.\n", head.dstName);
                 }
                 else
-                {
+                {   
+                    printf("[%s] %s\n", head.dstName, body.str);
                     printf("[%s] Invite Fail.\n", head.dstName);
                 }
             }

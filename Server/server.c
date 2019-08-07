@@ -448,8 +448,14 @@ int main(void)
                             strcpy(head.dstName, callForwarding[isForward].dstName);
                         }
 
-
-                        Server_Invite_Client_Request(clientList[searchClientIdx].fd, head.srcName, head.dstName);
+                        if(clientList[searchClientIdx].chatRoom > 0){
+                            memset(body.str, 0x00, sizeof(body.str));
+                            strcpy(body.str, "Client already chat with other Client.");
+                            Server_Invite_Client_Ack(clientList[i].fd, head.srcName, head.dstName, body.str);
+                        }else{
+                            Server_Invite_Client_Request(clientList[searchClientIdx].fd, head.srcName, head.dstName);
+                        }
+                       
                     }
                     else if (msgType == PACKET_TYPE_INVITE_ACK)
                     {
