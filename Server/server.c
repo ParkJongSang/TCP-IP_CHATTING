@@ -420,7 +420,6 @@ int main(void)
                     }
                     else if (msgType == PACKET_TYPE_STR_ACK)
                     {
-                        printf("RECV\n");
                         Queue_Pop_Front();
                         
                         int ackClientIdx = Server_Search_Client(head.dstName);

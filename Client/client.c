@@ -82,10 +82,10 @@ int main(void)
 
         if (fdNum == 0)
         {
-            // if((timeOverPacektType = Client_Check_Packet_Time_Over(connectFD, myName, time(NULL))) == PACKET_TYPE_CONN_ACK){
-            //     retryFlag = 1;
-            //     retryCnt = 0;
-            // }
+            if((timeOverPacektType = Client_Check_Packet_Time_Over(connectFD, myName, time(NULL))) == PACKET_TYPE_CONN_ACK){
+                retryFlag = 1;
+                retryCnt = 0;
+            }
             continue;
         }
         if (FD_ISSET(0, &reads))

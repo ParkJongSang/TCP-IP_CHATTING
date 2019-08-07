@@ -50,7 +50,6 @@ int Queue_Pop_Front(){
     if(Push_Back(FreeQ, popMallocQ) == -1){
         return QUEUE_FAIL;
     }
-    printf("pop!!!\n");
 
     return popMallocQ -> type;
 }
