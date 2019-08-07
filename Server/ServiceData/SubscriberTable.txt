@@ -4,3 +4,4 @@ JimRaynor
 King
 Zeratul
 Borazun
+Queen

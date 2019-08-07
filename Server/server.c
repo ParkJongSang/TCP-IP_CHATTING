@@ -113,7 +113,9 @@ int main(void)
         if (fdNum == 0)
         {
             /* Add time on Every Wait Queue Value */
-            Server_Check_Client_Time_Over(time(NULL));
+            if(Server_Check_Client_Time_Over(time(NULL)) == SERVER_FAIL){
+                printf("Client Time Check Fail.\n");
+            }
             Server_Check_Packet_Time_Over(time(NULL));
             if (IS_SIG == 1)
             {
@@ -183,7 +185,7 @@ int main(void)
             {
                 sleep(0.5);
             }
-            if (Server_Add_Client_List(connectFD, "unknown", time(NULL)) == -1)
+            if (Server_Add_Client_List(connectFD, "unknown", time(NULL)) == SERVER_FAIL)
             {
                 printf("add Fail.\n");
             }
@@ -236,32 +238,51 @@ int main(void)
                         {
                             printf("USER SAVE FAIL\n");
                         }
-                        Server_Sign_Up_Ack(clientList[i].fd, client);
+                        if(Server_Sign_Up_Ack(clientList[i].fd, client) == SERVER_FAIL){
+                            printf("Send Sign Up Ack Fail.\n");
+                        }
                     }
                     else if (msgType == PACKET_TYPE_LETTERING_ADD_REQ)
                     {
                         printf("send Lettering Ack\n");
                         strcpy(client, head.srcName);
-                        Lettering_Add_List(client, body.str);
-                        Lettering_Save_File();
-                        Server_Add_Lettering_Ack(clientList[i].fd, client);
+                        if(Lettering_Add_List(client, body.str) == LETTERING_FAIL){
+                            printf("Lettering Add Fail.\n");
+                        }
+                        if(Lettering_Save_File() == LETTERING_FAIL){
+                            printf("Lettering Save File Fai.\n");
+                        }
+                        if(Server_Add_Lettering_Ack(clientList[i].fd, client) == SERVER_FAIL){
+                            printf("Send Add Lettering Ack Fail.\n");
+                        }
                     }
                     else if (msgType == PACKET_TYPE_REJECT_CALL_ADD_REQ)
                     {
                         printf("send Reject Ack\n");
                         strcpy(client, head.srcName);
-                        RejectCall_Add_List(client, body.str);
-                        RejectCall_Save_File();
-                        Server_Add_Reject_Call_Ack(clientList[i].fd, client);
+                        if(RejectCall_Add_List(client, body.str) == REJECT_CALL_FAIL){
+                            printf("Reject Call Add Fail.\n");
+                        }
+                        if(RejectCall_Save_File() == REJECT_CALL_FAIL){
+                            printf("Reject Call Save File Fail.\n");
+                        }
+                        if(Server_Add_Reject_Call_Ack(clientList[i].fd, client) == REJECT_CALL_FAIL){
+                            printf("Send Reject Call Ack Fail.\n");
+                        }
                     }
                     else if (msgType == PACKET_TYPE_CALL_FORWARDING_ADD_REQ)
                     {
                         printf("send Forwarding Ack\n");
                         strcpy(client, head.srcName);
-                        CallForwarding_Add_List(client, body.str);
-                        CallForwarding_Save_File();
-
-                        Server_Add_Call_Forwarding_Ack(clientList[i].fd, client);
+                        if(CallForwarding_Add_List(client, body.str) == CALL_FORWARDING_FAIL){
+                            printf("Call Forwarding Add Fail.\n");
+                        }
+                        if(CallForwarding_Save_File() == CALL_FORWARDING_FAIL){
+                            printf("Call Forwardig Save File Fail.\n");
+                        }
+                        if(Server_Add_Call_Forwarding_Ack(clientList[i].fd, client) == CALL_FORWARDING_FAIL){
+                            printf("Send Call Forwarding Ack Fail.\n");
+                        }
                     }
                     else if (msgType == PACKET_TYPE_CONN_REQ)
                     {
@@ -282,7 +303,9 @@ int main(void)
                             state = 1;
                         }
 
-                        Server_Ack_To_Client(clientList[i].fd, client, state);
+                        if(Server_Ack_To_Client(clientList[i].fd, client, state) == SERVER_FAIL){
+                            printf("Send Ack for Connect.\n");
+                        }
                     }
                     else if (msgType == PACKET_TYPE_EXIT_REQ)
                     {
@@ -306,7 +329,9 @@ int main(void)
                             {
                                 if (clientList[i].fd != chatRoomList[curChatRoom][j])
                                 {
-                                    Server_Alram_Request(chatRoomList[curChatRoom][j], msg);
+                                    if(Server_Alram_Request(chatRoomList[curChatRoom][j], msg) == SERVER_FAIL){
+                                        printd("Send Alram Req Fail.\n");
+                                    }
                                     printf("Alram Send\n");
                                 }
                             }
@@ -327,8 +352,12 @@ int main(void)
 
                         printf("send EXIT Ack\n");
                         strcpy(client, head.srcName);
-                        Server_Exit_Ack(clientList[i].fd, clientList[i].name);
-                        Server_Del_Client_List(clientList[i].fd, clientList[i].name);
+                        if(Server_Exit_Ack(clientList[i].fd, clientList[i].name) == SERVER_FAIL){
+                            printf("Send Exit Ack Fail.\n");
+                        }
+                        if(Server_Del_Client_List(clientList[i].fd, clientList[i].name) == SERVER_FAIL){
+                            printf("Delete Client in ClientList Fail.\n");
+                        }
                     }
                     else if (msgType == PACKET_TYPE_EXIT_CHATROOM_REQ)
                     {
@@ -344,13 +373,17 @@ int main(void)
 
                         strcpy(client, head.srcName);
                         /* Send All Client in Same ChatRooms */
-                        Server_Exit_Chat_Romm_Ack(clientList[i].fd, client);
+                        if(Server_Exit_Chat_Romm_Ack(clientList[i].fd, client) == SERVER_FAIL){
+                            printf("Send Exit Chatroom Ack Fail.\n");
+                        }
 
                         for (j = 1; j <= curClientInChatRoom; j++)
                         {
                             if (clientList[i].fd != chatRoomList[curChatRoom][j])
                             {
-                                Server_Alram_Request(chatRoomList[curChatRoom][j], msg);
+                                if(Server_Alram_Request(chatRoomList[curChatRoom][j], msg) == SERVER_FAIL){
+                                    printf("Send Alram Fail.\n");
+                                }
                                 printf("Alram Send\n");
                             }
                         }
@@ -373,27 +406,45 @@ int main(void)
                         printf("send Lettering Del Ack\n");
                         strcpy(client, head.srcName);
                         /* Del */
-                        Lettering_Del_List(client);
-                        Lettering_Save_File();
-                        Server_Del_Lettering_Ack(clientList[i].fd, client);
+                        if(Lettering_Del_List(client) == LETTERING_FAIL){
+                            printf("Lettering Del Fail.\n");
+                        }
+                        if(Lettering_Save_File() == LETTERING_FAIL){
+                            printf("Lettering Save File Fail.\n");
+                        }
+                        if(Server_Del_Lettering_Ack(clientList[i].fd, client) == SERVER_FAIL){
+                            printf("Send Del Lettering Ack Fail.\n");
+                        }
                     }
                     else if (msgType == PACKET_TYPE_REJECT_CALL_DEL_REQ)
                     {
                         printf("send RejectCall Del Ack\n");
                         strcpy(client, head.srcName);
                         /* Del */
-                        RejectCall_Del_List(client, body.str);
-                        RejectCall_Save_File();
-                        Server_Del_Reject_Call_Ack(clientList[i].fd, client);
+                        if(RejectCall_Del_List(client, body.str) == REJECT_CALL_FAIL){
+                            printf("RejectCall Del Fail.\n");
+                        }
+                        if(RejectCall_Save_File() == REJECT_CALL_FAIL){
+                            printf("RejectCall Save File Fail.\n");
+                        }
+                        if(Server_Del_Reject_Call_Ack(clientList[i].fd, client) == REJECT_CALL_FAIL){
+                            printf("Send Del RejectCall Ack Fail.\n");
+                        }
                     }
                     else if (msgType == PACKET_TYPE_CALL_FORWARDING_DEL_REQ)
                     {
                         printf("send CallForwarding Del Ack\n");
                         strcpy(client, head.srcName);
                         /* Del */
-                        CallForwarding_Del_List(client);
-                        CallForwarding_Save_File();
-                        Server_Del_Call_Forwarding_Ack(clientList[i].fd, client);
+                        if(CallForwarding_Del_List(client) == CALL_FORWARDING_FAIL){
+                            printf("Call Forwarding Del Fail.\n");
+                        }
+                        if(CallForwarding_Save_File() == CALL_FORWARDING_FAIL){
+                            printf("Call Forwarding Save File Fail.\n");
+                        }
+                        if(Server_Del_Call_Forwarding_Ack(clientList[i].fd, client) == CALL_FORWARDING_FAIL){
+                            printf("Send Del Call Forwarding Ack Fail.\n");
+                        }
                     }
                     else if (msgType == PACKET_TYPE_CREATE_CHATROOM_REQ)
                     {
@@ -413,7 +464,10 @@ int main(void)
                         chatRoomList[voidChatRoomIdx][size + 1] = clientList[i].fd;
                         chatRoomList[voidChatRoomIdx][0] += 1;
                         clientList[i].chatRoom = voidChatRoomIdx;
-                        Server_Create_Chat_Room_Ack(clientList[i].fd, client);
+
+                        if(Server_Create_Chat_Room_Ack(clientList[i].fd, client) == SERVER_FAIL){
+                            printf("Send Create Chatroom Ack Fail.\n");
+                        }
                     }
                     else if (msgType == PACKET_TYPE_INVITE_REQ)
                     {
@@ -578,7 +632,9 @@ int main(void)
                     }
                     else if (msgType == PACKET_TYPE_EXIT_ACK)
                     {
-                        Server_Del_Client_List(clientList[i].fd, clientList[i].name);
+                        if(Server_Del_Client_List(clientList[i].fd, clientList[i].name) == SERVER_FAIL){
+                            printf("Del Client Fail.\n");
+                        }
                         curClientCnt -= 1;
                     }
                     else if (msgType == PACKET_TYPE_PING_ACK)
