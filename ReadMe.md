@@ -49,7 +49,7 @@
 2. Server-Client NonBlocking 모드 연결
 
 2019.8.2
-1.ReadNWrite 해결
+1. ReadNWrite 해결
 
 2.각 자료구조와 Table -> Server와 연결
 
