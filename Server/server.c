@@ -239,6 +239,45 @@ int main(void)
                     }
                     else if (msgType == PACKET_TYPE_EXIT_REQ)
                     {
+                        int curChatRoom = -1;
+                        int curClientInChatRoom = -1;
+                        int j = 0;
+                        int searchFlag = 0;
+                        char msg[1024];
+
+                        if (clientList[i].chatRoom != 0)
+                        {
+                            curChatRoom = clientList[i].chatRoom;
+                            curClientInChatRoom = chatRoomList[curChatRoom][0];
+                        }
+
+                        if (curChatRoom != -1 && curClientInChatRoom != -1)
+                        {
+                            sprintf(msg, "[%s] is Exit Chatroom.", clientList[i].name);
+                            strcpy(client, head.srcName);
+                            for (j = 1; j <= curClientInChatRoom; j++)
+                            {
+                                if (clientList[i].fd != chatRoomList[curChatRoom][j])
+                                {
+                                    Server_Alram_Request(chatRoomList[curChatRoom][j], msg);
+                                    printf("Alram Send\n");
+                                }
+                            }
+                            for (j = 1; j <= curClientInChatRoom; j++)
+                            {
+                                if (clientList[i].fd == chatRoomList[curChatRoom][j])
+                                {
+                                    searchFlag = 1;
+                                }
+                                if (searchFlag == 1)
+                                {
+                                    chatRoomList[curChatRoom][j] = chatRoomList[curChatRoom][j + 1];
+                                }
+                            }
+                            chatRoomList[curChatRoom][0] -= 1;
+                            clientList[i].chatRoom = 0;
+                        }
+
                         printf("send EXIT Ack\n");
                         strcpy(client, head.srcName);
                         Server_Exit_Ack(clientList[i].fd, clientList[i].name);
@@ -334,6 +373,7 @@ int main(void)
                         /* INVITE LOGIC */
                         printf("Send Invite\n");
                         int callForwardingIdx = -1;
+
                         int searchClientIdx = Server_Search_Client(head.dstName);
                         if (searchClientIdx < 0)
                         {
@@ -361,6 +401,7 @@ int main(void)
                             strcpy(head.dstName, callForwarding[isForward].dstName);
                         }
 
+
                         Server_Invite_Client_Request(clientList[searchClientIdx].fd, head.srcName, head.dstName);
                     }
                     else if (msgType == PACKET_TYPE_INVITE_ACK)
@@ -370,7 +411,6 @@ int main(void)
                         {
                             Queue_Pop_Front();
                         }
-
                         printf("send Invite Ack.\n");
                         int searchClientIdx = Server_Search_Client(head.srcName);
                         if (searchClientIdx < 0)
@@ -389,10 +429,23 @@ int main(void)
                         {
                             int curChatRoom = clientList[searchClientIdx].chatRoom;
                             int size = chatRoomList[curChatRoom][0];
+                            int j = 0;
+                            char msg[1024];
 
                             clientList[beInvitedClientIdx].chatRoom = curChatRoom;
                             chatRoomList[curChatRoom][size + 1] = clientList[beInvitedClientIdx].fd;
                             chatRoomList[curChatRoom][0] += 1;
+                            
+                            sprintf(msg, "[%s] is Invited Chat Room.\n", head.dstName);
+
+                            for (j = 1; j <= size; j++)
+                            {
+                                if (clientList[i].fd != chatRoomList[curChatRoom][j])
+                                {
+                                    Server_Alram_Request(chatRoomList[curChatRoom][j], msg);
+                                    printf("Alram Send\n");
+                                }
+                            }
                         }
 
                         Server_Invite_Client_Ack(clientList[searchClientIdx].fd, head.srcName, head.dstName, body.str);
@@ -465,7 +518,6 @@ int main(void)
                     }
                     else if (msgType == PACKET_TYPE_ALRAM_ACK)
                     {
-                        
                         if(MallocQ->head != NULL && MallocQ->head->type == msgType)
                         {
                             Queue_Pop_Front();

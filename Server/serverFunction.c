@@ -631,46 +631,57 @@ int Server_Del_Client_List(int sockFd, char *client)
     return SERVER_SUCCESS;
 }
 
-void Server_Check_Packet_Time_Over(long curTime){
+void Server_Check_Packet_Time_Over(long curTime)
+{
     Node *cursor = NULL;
     Node *temp = NULL;
     int isPop = 0;
-    cursor = MallocQ -> head;
-    while(cursor != NULL){
-        if(curTime - (cursor -> time) > 5){
+    cursor = MallocQ->head;
+    while (cursor != NULL)
+    {
+        if (isPop == 1)
+        {
+            cursor = cursor->next;
+            cursor->time = curTime;
+        }
+        else
+        {
+            break;
+        }
+        if (curTime - (cursor->time) > 5)
+        {
             temp = Queue_front();
-            if(temp -> type == PACKET_TYPE_PING_ACK){
-                int idx = Server_Search_Client(temp -> name);
-                if(idx < 0){
+            if (temp->type == PACKET_TYPE_PING_ACK)
+            {
+                int idx = Server_Search_Client(temp->name);
+                if (idx < 0)
+                {
                     printf("Cannot Search.\n");
                     break;
                 }
-                if(Server_Exit_Request(clientList[idx].fd, clientList[idx].name) == SERVER_FAIL){
+                if (Server_Exit_Request(clientList[idx].fd, clientList[idx].name) == SERVER_FAIL)
+                {
                     printf("Exit Req Fail.\n");
                 }
                 printf("EXIT CLIENT.\n");
             }
-            printf("[%d]TimeOut PACKET OUT.\n", temp -> type);
+            printf("[%d]TimeOut PACKET OUT.\n", temp->type);
             Queue_Pop_Front();
             isPop = 1;
-        }else{
-            if(isPop == 1){
-                cursor = cursor -> next;
-                cursor ->time = curTime;
-            }else{
-                break;
-            }
         }
     }
-
 }
 
-int Server_Check_Client_Time_Over(long curTime){
+int Server_Check_Client_Time_Over(long curTime)
+{
     int i = 0;
     int ret = 0;
-    for(i = 0; i < clientListSize; i++){
-        if(clientList[i].isPing == 0 && curTime - clientList[i].time > 3){
-            if(Server_Ping_Request(clientList[i].fd, clientList[i].name) == SERVER_FAIL){
+    for (i = 0; i < clientListSize; i++)
+    {
+        if (clientList[i].isPing == 0 && curTime - clientList[i].time > 3)
+        {
+            if (Server_Ping_Request(clientList[i].fd, clientList[i].name) == SERVER_FAIL)
+            {
                 return SERVER_FAIL;
             }
             clientList[i].isPing = 1;
@@ -679,7 +690,6 @@ int Server_Check_Client_Time_Over(long curTime){
     }
     return SERVER_SUCCESS;
 }
-
 
 void Server_Siging_Handler(int signo)
 {
