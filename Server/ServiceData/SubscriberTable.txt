@@ -1,5 +1,6 @@
 Fenix
 Kerrigun
-Zeratul
 JimRaynor
 King
+Zeratul
+Borazun

@@ -86,6 +86,7 @@ int main(void)
         }
 
         FD_ZERO(&reads);
+        FD_SET(0, &reads);
         FD_SET(listenFD, &reads);
 
         for (i = 0; i < clientListSize; i++)
@@ -123,6 +124,52 @@ int main(void)
                 break;
             }
             continue;
+        }
+        if(FD_ISSET(0, &reads))
+        {
+            char tmpStr[1024];
+            fgets(tmpStr, 1024, stdin);
+            if(strcmp(tmpStr, "UserAdd\n") == 0){
+                char name[20];
+                printf("name :: ");
+                scanf("%s", name);
+
+                int clientIdx = Server_Search_Client(name);
+
+                if(User_Add_List(name) == USER_FAIL || clientIdx >= 0){
+                    printf("User Add Fail.\n");
+                }
+                User_Save_File();
+            }else if(strcmp(tmpStr, "UserDelete\n") == 0){
+                char name[20];
+                printf("name :: ");
+                scanf("%s", name);
+
+                int clientIdx = Server_Search_Client(name);
+
+                if(User_Del_List(name) == USER_FAIL  || clientIdx >= 0){
+                    printf("User Del Fail.\n");
+                }
+                User_Save_File();
+            }else if(strcmp(tmpStr, "UserModify\n") == 0){
+                char originName[20], changeName[20];
+                printf("Origin Name :: ");
+                scanf("%s", originName);
+                printf("Change Name :: ");
+                scanf("%s", changeName);
+
+                int originIdx = Server_Search_Client(originName);
+                int changeIndx = User_Search_List(changeName);
+
+                if(User_Del_List(originName) == USER_FAIL || originIdx >= 0){
+                    printf("User Modify Fail.(Del)\n");
+                }
+                if(User_Add_List(changeName) == USER_FAIL || originIdx >= 0 || changeIndx >= 0){
+                    printf("User Modify Fail.(Add)\n");
+                }
+                User_Save_File();
+            }
+            fdNum -= 1;
         }
 
         if (FD_ISSET(listenFD, &reads))
