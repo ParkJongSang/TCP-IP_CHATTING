@@ -67,7 +67,6 @@ int main(void)
 
     while (1)
     {
-
         int fdNum = 0;
         int i = 0;
         long curTime = time(NULL);
@@ -131,7 +130,7 @@ int main(void)
         {
             char tmpStr[1024];
             fgets(tmpStr, 1024, stdin);
-            if(strcmp(tmpStr, "UserAdd\n") == 0){
+            if(strcmp(tmpStr, "AddUser\n") == 0){
                 char name[20];
                 printf("name :: ");
                 scanf("%s", name);
@@ -142,7 +141,7 @@ int main(void)
                     printf("User Add Fail.\n");
                 }
                 User_Save_File();
-            }else if(strcmp(tmpStr, "UserDelete\n") == 0){
+            }else if(strcmp(tmpStr, "DelUser\n") == 0){
                 char name[20];
                 printf("name :: ");
                 scanf("%s", name);
@@ -153,7 +152,7 @@ int main(void)
                     printf("User Del Fail.\n");
                 }
                 User_Save_File();
-            }else if(strcmp(tmpStr, "UserModify\n") == 0){
+            }else if(strcmp(tmpStr, "ModifyUser\n") == 0){
                 char originName[20], changeName[20];
                 printf("Origin Name :: ");
                 scanf("%s", originName);
@@ -176,16 +175,14 @@ int main(void)
 
         if (FD_ISSET(listenFD, &reads))
         {
-            if(curClientCnt >= 10){
-                printf("MAX CLIENT.\n");
-                continue;
-            }
+            char tmpId[20];
             socklen_t addrSize = sizeof(connectSocket);
             while ((connectFD = accept(listenFD, (struct sockaddr *)&connectSocket, &addrSize)) < 0)
             {
                 sleep(0.5);
             }
-            if (Server_Add_Client_List(connectFD, "unknown", time(NULL)) == SERVER_FAIL)
+            sprintf(tmpId, "unknown%d", clientListSize);
+            if (Server_Add_Client_List(connectFD, tmpId, time(NULL)) == SERVER_FAIL)
             {
                 printf("add Fail.\n");
             }
@@ -193,9 +190,13 @@ int main(void)
             {
                 printf("FCNTL ERROR.\n");
             }
-            printf("[CONNECTED] : UNKNOWN CLIENT\n");
-            curClientCnt += 1;
+            printf("[CONNECTED] : %s CLIENT\n", tmpId);
             fdNum -= 1;
+
+            if(clientListSize > 10){
+                Server_Exit_Request(connectFD, tmpId);
+                continue;
+            }
         }
 
         while (fdNum > 0)
@@ -358,6 +359,7 @@ int main(void)
                         if(Server_Del_Client_List(clientList[i].fd, clientList[i].name) == SERVER_FAIL){
                             printf("Delete Client in ClientList Fail.\n");
                         }
+                        curClientCnt -= 1;
                     }
                     else if (msgType == PACKET_TYPE_EXIT_CHATROOM_REQ)
                     {
@@ -651,14 +653,14 @@ int main(void)
                     }
                     else if (msgType == PACKET_TYPE_EXIT_ACK)
                     {
+                        printf("Receive Exit Ack.\n");
                         if(Server_Del_Client_List(clientList[i].fd, clientList[i].name) == SERVER_FAIL){
                             printf("Del Client Fail.\n");
                         }
-                        curClientCnt -= 1;
                     }
                     else if (msgType == PACKET_TYPE_PING_ACK)
                     {
-                        if (clientList[i].isPing == 1 && MallocQ->head != NULL && Queue_front()->type == PACKET_TYPE_PING_ACK)
+                        if (clientList[i].isPing == 1 && MallocQ->head != NULL && MallocQ->head->type == PACKET_TYPE_PING_ACK)
                         {
                             clientList[i].isPing = 0;
                             if(Queue_Pop_Front() == QUEUE_FAIL){

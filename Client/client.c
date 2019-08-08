@@ -119,7 +119,27 @@ int main(void)
             // {
             //     printf("[%s]Message :: ", myName);
             // }
-            if (strcmp(tmpStr, "SignUp\n") == 0)
+            if(strcmp(tmpStr, "Help\n") == 0 || strcmp(tmpStr, "help\n") == 0)
+            {
+                printf("=====Introduce Command=====\n");
+                printf("1. SignUp - Sign Up this Service\n");
+                printf("2. Connect - Connect with your id\n");
+                printf("3. Exit - Exit this program\n");
+
+                printf("=====After Connect=====\n");
+                printf("1. Create - Create Chatroom\n");
+                printf("2. AddLettering - Add Lettering Service\n");
+                printf("3. AddRejectCall - Add Reject Call Service\n");
+                printf("4. AddCallForwarding - Add Call Forwarding\n");
+                printf("5. DelLettering - Delete Lettering Service\n");
+                printf("6. DelRejectCall - Delete Reject Call Service\n");
+                printf("7. DelCallForwarding - Delete Call Forwarding Service\n");
+
+                printf("=====In Chatroom=====\n");
+                printf("1. !Invite - Invite other user\n");
+                printf("2. !Exit - Exit this Chatroom\n");
+            }
+            else if (strcmp(tmpStr, "SignUp\n") == 0)
             {
                 char name[20];
                 char lettering[20];
@@ -151,7 +171,7 @@ int main(void)
                     printf("Call Forwarding Add Req Fail.\n");
                 }
             }
-            else if (strcmp(tmpStr, "Connect\n") == 0 && isConnected == 0)
+            else if (strcmp(tmpStr, "Connect\n") == 0 && isConnected == 0 && isChat == 0)
             {
                 char tmpId[20];
                 printf("ID :: ");
@@ -169,7 +189,7 @@ int main(void)
                     printf("Exit Req Fail.\n");
                 }
             }
-            else if (strcmp(tmpStr, "AddLettering\n") == 0 && isConnected == 1)
+            else if (strcmp(tmpStr, "AddLettering\n") == 0 && isConnected == 1 && isChat == 0)
             {
                 char LetteringName[20];
                 printf("LetteringName :: ");
@@ -179,7 +199,7 @@ int main(void)
                     printf("Lettering Add Req Fail.\n");
                 }
             }
-            else if (strcmp(tmpStr, "DelLettering\n") == 0 && isConnected == 1)
+            else if (strcmp(tmpStr, "DelLettering\n") == 0 && isConnected == 1 && isChat == 0)
             {
                 printf("Delete Your Lettering Name.\n");
                 if (Client_Del_Lettering(connectFD, myName) == CLIENT_FAIL)
@@ -187,7 +207,7 @@ int main(void)
                     printf("Lettering Del Req Fail.\n");
                 }
             }
-            else if (strcmp(tmpStr, "AddCallForwarding\n") == 0 && isConnected == 1)
+            else if (strcmp(tmpStr, "AddCallForwarding\n") == 0 && isConnected == 1 && isChat == 0)
             {
                 char CallForwardingName[20];
                 printf("CallForwardingName :: ");
@@ -197,7 +217,7 @@ int main(void)
                     printf("Call Forwarding Add Req Fail.\n");
                 }
             }
-            else if (strcmp(tmpStr, "DelCallForwarding\n") == 0 && isConnected == 1)
+            else if (strcmp(tmpStr, "DelCallForwarding\n") == 0 && isConnected == 1 && isChat == 0)
             {
                 printf("Delete Your Call Forwarding Service.\n");
                 if (Client_Del_Call_Forwarding(connectFD, myName) == CLIENT_FAIL)
@@ -205,7 +225,7 @@ int main(void)
                     printf("Call Forwarding Del Req Fail.\n");
                 }
             }
-            else if (strcmp(tmpStr, "AddRejectCall\n") == 0 && isConnected == 1)
+            else if (strcmp(tmpStr, "AddRejectCall\n") == 0 && isConnected == 1 && isChat == 0)
             {
                 char RejectName[20];
                 printf("RejectName :: ");
@@ -215,7 +235,7 @@ int main(void)
                     printf("Reject Call Add Req Fail.\n");
                 }
             }
-            else if (strcmp(tmpStr, "DelRejectCall\n") == 0 && isConnected == 1)
+            else if (strcmp(tmpStr, "DelRejectCall\n") == 0 && isConnected == 1 && isChat == 0)
             {
                 char RejectName[20];
                 printf("RejectName :: ");
@@ -476,6 +496,7 @@ int main(void)
             /* Receive Request */
             if (msgType == PACKET_TYPE_PING_REQ)
             {
+                printf("RECV PING.\n");
                 if (Client_Ping_Ack(connectFD, myName) == CLIENT_FAIL)
                 {
                     printf("Send Ping Ack Fail.\n");
@@ -485,10 +506,12 @@ int main(void)
             {
                 isChat = 0;
                 isConnected = 0;
+                
                 if (Client_Exit_Ack(connectFD, myName) == CLIENT_FAIL)
                 {
                     printf("Send Exit Ack Fail.\n");
                 }
+                
                 memset(myName, 0x00, sizeof(myName));
                 break;
             }

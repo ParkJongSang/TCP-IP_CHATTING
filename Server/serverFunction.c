@@ -223,10 +223,6 @@ int Server_Exit_Request(int sockFd, char *client)
         return SERVER_FAIL;
     }
 
-    if(Queue_Push_Back(client, PACKET_TYPE_EXIT_ACK, curTime) == QUEUE_FAIL){
-        printf("Queue Push Fail.\n");
-    }
-
     return SERVER_SUCCESS;
 }
 
@@ -619,9 +615,17 @@ int Server_Del_Client_List(int sockFd, char *client)
         printf("Search Fail...\n");
         return SERVER_FAIL;
     }
-
+    
     close(clientList[clientIdx].fd);
-
+    if (clientIdx == clientListSize - 1){
+        clientList[clientIdx].chatRoom = 0;
+        clientList[clientIdx].time = -1;
+        clientList[clientIdx].fd = -1;
+        clientList[clientIdx].isPing = 0;
+        memset(clientList[clientIdx].name, 0x00, sizeof(clientList[clientIdx].name));
+        clientListSize -= 1;
+        return SERVER_SUCCESS;
+    }
     for (i = clientIdx; i < clientListSize; i++)
     {
         clientList[i].chatRoom = clientList[i + 1].chatRoom;
@@ -650,15 +654,6 @@ void Server_Check_Packet_Time_Over(long curTime)
     cursor = MallocQ->head;
     while (cursor != NULL)
     {
-        if (isPop == 1)
-        {
-            cursor = cursor->next;
-            cursor->time = curTime;
-        }
-        else
-        {
-            break;
-        }
         if (curTime - (cursor->time) > 5)
         {
             temp = Queue_front();
@@ -681,6 +676,15 @@ void Server_Check_Packet_Time_Over(long curTime)
                 printf("Queue Pop Fail.\n");
             }
             isPop = 1;
+        }
+        if (isPop == 1)
+        {
+            cursor = cursor->next;
+            cursor->time = curTime;
+        }
+        else
+        {
+            break;
         }
     }
 }

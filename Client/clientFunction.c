@@ -194,10 +194,6 @@ int Client_Exit_Request(int sockFd, char *self)
         return CLIENT_FAIL;
     }
 
-    if(Queue_Push_Back(self, PACKET_TYPE_EXIT_ACK, curTime) == QUEUE_FAIL){
-        printf("Queue Push Fail.\n");
-    }
-
     return CLIENT_SUCCESS;
 }
 
@@ -449,7 +445,7 @@ int Client_Del_Lettering(int sockFd, char *self)
     }
 
     if(Queue_Push_Back(self, PACKET_TYPE_LETTERING_DEL_ACK, curTime) == QUEUE_FAIL){
-        printF("Queue Push Fail.\n");
+        printf("Queue Push Fail.\n");
     }
 
     return CLIENT_SUCCESS;

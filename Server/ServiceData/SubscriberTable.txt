@@ -5,3 +5,4 @@ King
 Zeratul
 Borazun
 Queen
+Altanix
