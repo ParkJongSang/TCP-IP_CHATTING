@@ -126,7 +126,7 @@ int main(void)
             }
             continue;
         }
-        if(FD_ISSET(0, &reads))
+        if(FD_ISSET(0, &reads) && clientListSize == 0);
         {
             char tmpStr[1024];
             fgets(tmpStr, 1024, stdin);
@@ -154,6 +154,8 @@ int main(void)
                 User_Save_File();
             }else if(strcmp(tmpStr, "ModifyUser\n") == 0){
                 char originName[20], changeName[20];
+                int flag = 1;
+
                 printf("Origin Name :: ");
                 scanf("%s", originName);
                 printf("Change Name :: ");
@@ -162,13 +164,41 @@ int main(void)
                 int originIdx = Server_Search_Client(originName);
                 int changeIndx = User_Search_List(changeName);
 
-                if(User_Del_List(originName) == USER_FAIL || originIdx >= 0){
-                    printf("User Modify Fail.(Del)\n");
+                if (originIdx < 0)
+                {
+                    if (User_Del_List(originName) == USER_FAIL)
+                    {
+                        flag = 0;
+                        printf("User Modify Fail.(Del)\n");
+                    }
+                }else{
+                    printf("Client is conneting now.\n");
                 }
-                if(User_Add_List(changeName) == USER_FAIL || originIdx >= 0 || changeIndx >= 0){
-                    printf("User Modify Fail.(Add)\n");
+
+                if (flag == 1 && changeIndx < 0)
+                {
+                    if (User_Add_List(changeName) == USER_FAIL)
+                    {
+                        printf("User Modify Fail.(Add)\n");
+                    }
+                }else{
+                    printf("Change Name is using.\n");
                 }
+
                 User_Save_File();
+            }else if(strcmp(tmpStr, "PrintUser\n") == 0){
+                int length = userSize;
+                int i = 0;
+                printf("======User List=====\n");
+                for(i = 0; i < length; i++){
+                    printf("%d.%s\n", i+1, user[i]);
+                }
+            }else if(strcmp(tmpStr, "Help\n") == 0 || strcmp(tmpStr, "help\n") == 0){
+                printf("======command=======\n");
+                printf("1. AddUser - Add User Name.\n");
+                printf("2. DelUser - Delete User Name.\n");
+                printf("3. ModifyUser - Modify User Name.\n");
+                printf("4. PrintUser - Print All Users.\n");
             }
             fdNum -= 1;
         }
