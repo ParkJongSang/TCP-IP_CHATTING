@@ -5,3 +5,4 @@ Zeratul
 Altanix
 Duran
 Majesty
+Narud

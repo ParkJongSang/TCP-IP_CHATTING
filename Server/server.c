@@ -126,7 +126,7 @@ int main(void)
             }
             continue;
         }
-        if(FD_ISSET(0, &reads))
+        if(FD_ISSET(0, &reads)cd )
         {
             char tmpStr[1024];
             fgets(tmpStr, 1024, stdin);
@@ -188,7 +188,7 @@ int main(void)
             }else if(strcmp(tmpStr, "PrintUser\n") == 0){
                 int length = userSize;
                 int i = 0;
-                printf("======User List=====\n");
+                printf("======User List======\n");
                 for(i = 0; i < length; i++){
                     printf("%d.%s\n", i+1, user[i]);
                 }

@@ -111,14 +111,6 @@ int main(void)
             }
             char tmpStr[1024];
             fgets(tmpStr, 1024, stdin);
-            // if (isConnected == 1 && isChat == 0 && isCommand == 1)
-            // {
-            //     printf("[%s]Command :: ", myName);
-            // }
-            // if (isConnected == 1 && isChat == 1 && isCommand == 1)
-            // {
-            //     printf("[%s]Message :: ", myName);
-            // }
             if(strcmp(tmpStr, "Help\n") == 0 || strcmp(tmpStr, "help\n") == 0)
             {
                 printf("=====Introduce Command=====\n");
@@ -553,7 +545,7 @@ int main(void)
                 /* SEND ACK MESSAGE */
                 if (Client_Alram_Ack(connectFD, myName) == CLIENT_FAIL)
                 {
-                    printf("Send Alram Ack Message.\n");
+                    printf("Send Alram Ack Message Fail.\n");
                 }
             }
             continue;

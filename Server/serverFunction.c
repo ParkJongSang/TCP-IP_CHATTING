@@ -672,8 +672,10 @@ void Server_Check_Packet_Time_Over(long curTime)
                 printf("EXIT CLIENT.\n");
             }
             printf("[%d]TimeOut PACKET OUT.\n", temp->type);
-            if(Queue_Pop_Front() == QUEUE_FAIL){
-                printf("Queue Pop Fail.\n");
+            if(MallocQ -> head != NULL){
+                if(Queue_Pop_Front() == QUEUE_FAIL){
+                    printf("Queue Pop Fail.\n");
+                }
             }
             isPop = 1;
         }
