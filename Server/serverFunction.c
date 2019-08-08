@@ -98,7 +98,9 @@ int Server_Ping_Request(int sockFd, char *client)
         return SERVER_FAIL;
     }
 
-    Queue_Push_Back(client, PACKET_TYPE_PING_ACK, curTime);
+    if(Queue_Push_Back(client, PACKET_TYPE_PING_ACK, curTime) == QUEUE_FAIL){
+        printf("Queue Push Fail.\n");
+    }
 
     return SERVER_SUCCESS;
 }
@@ -159,7 +161,9 @@ int Server_Chat_Request(int sockFd, char *client, char *message)
         return SERVER_FAIL;
     }
 
-    Queue_Push_Back(client, PACKET_TYPE_STR_ACK, curTime);
+    if(Queue_Push_Back(client, PACKET_TYPE_STR_ACK, curTime) == QUEUE_FAIL){
+        printf("Queue Push Fail.\n");
+    }
 
     return SERVER_SUCCESS;
 }
@@ -219,7 +223,9 @@ int Server_Exit_Request(int sockFd, char *client)
         return SERVER_FAIL;
     }
 
-    Queue_Push_Back(client, PACKET_TYPE_EXIT_ACK, curTime);
+    if(Queue_Push_Back(client, PACKET_TYPE_EXIT_ACK, curTime) == QUEUE_FAIL){
+        printf("Queue Push Fail.\n");
+    }
 
     return SERVER_SUCCESS;
 }
@@ -291,7 +297,9 @@ int Server_Invite_Client_Request(int sockFd, char *client_1, char *client_2)
         return SERVER_FAIL;
     }
 
-    Queue_Push_Back(client_2, PACKET_TYPE_INVITE_ACK, curTime);
+    if(Queue_Push_Back(client_2, PACKET_TYPE_INVITE_ACK, curTime) == QUEUE_FAIL){
+        printf("Queue Push Fail.\n");
+    }
 
     return SERVER_SUCCESS;
 }
@@ -392,7 +400,10 @@ int Server_Alram_Request(int sockFd, char *msg)
     {
         return SERVER_FAIL;
     }
-    Queue_Push_Back("server", PACKET_TYPE_ALRAM_ACK, curTime);
+    
+    if(Queue_Push_Back("server", PACKET_TYPE_ALRAM_ACK, curTime) == QUEUE_FAIL){
+        printf("Queue Push Fail.\n");
+    }
 
     return SERVER_SUCCESS;
 }
@@ -666,7 +677,9 @@ void Server_Check_Packet_Time_Over(long curTime)
                 printf("EXIT CLIENT.\n");
             }
             printf("[%d]TimeOut PACKET OUT.\n", temp->type);
-            Queue_Pop_Front();
+            if(Queue_Pop_Front() == QUEUE_FAIL){
+                printf("Queue Pop Fail.\n");
+            }
             isPop = 1;
         }
     }

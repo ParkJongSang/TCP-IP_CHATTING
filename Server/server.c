@@ -330,7 +330,7 @@ int main(void)
                                 if (clientList[i].fd != chatRoomList[curChatRoom][j])
                                 {
                                     if(Server_Alram_Request(chatRoomList[curChatRoom][j], msg) == SERVER_FAIL){
-                                        printd("Send Alram Req Fail.\n");
+                                        printf("Send Alram Req Fail.\n");
                                     }
                                     printf("Alram Send\n");
                                 }
@@ -505,18 +505,24 @@ int main(void)
                         if(clientList[searchClientIdx].chatRoom > 0){
                             memset(body.str, 0x00, sizeof(body.str));
                             strcpy(body.str, "Client already chat with other Client.");
-                            Server_Invite_Client_Ack(clientList[i].fd, head.srcName, head.dstName, body.str);
+                            if(Server_Invite_Client_Ack(clientList[i].fd, head.srcName, head.dstName, body.str) == SERVER_FAIL){
+                                printf("Send Invite Ack Fail.\n");
+                            }
                         }else{
-                            Server_Invite_Client_Request(clientList[searchClientIdx].fd, head.srcName, head.dstName);
+                            if(Server_Invite_Client_Request(clientList[searchClientIdx].fd, head.srcName, head.dstName) == SERVER_FAIL){
+                                printf("Send Invite Fail.\n");
+                            }
                         }
                        
                     }
                     else if (msgType == PACKET_TYPE_INVITE_ACK)
                     {
                         /* INVITE LOGIC */
-                        if (MallocQ->head->type == msgType)
+                        if (MallocQ->head != NULL && MallocQ->head->type == msgType)
                         {
-                            Queue_Pop_Front();
+                            if(Queue_Pop_Front() == QUEUE_FAIL){
+                                printf("Pop Fail.\n");
+                            }
                         }
                         printf("send Invite Ack.\n");
                         int searchClientIdx = Server_Search_Client(head.srcName);
@@ -549,13 +555,17 @@ int main(void)
                             {
                                 if (clientList[i].fd != chatRoomList[curChatRoom][j])
                                 {
-                                    Server_Alram_Request(chatRoomList[curChatRoom][j], msg);
+                                    if(Server_Alram_Request(chatRoomList[curChatRoom][j], msg) == SERVER_FAIL){
+                                        printf("Send Alram Fail.\n");
+                                    }
                                     printf("Alram Send\n");
                                 }
                             }
                         }
 
-                        Server_Invite_Client_Ack(clientList[searchClientIdx].fd, head.srcName, head.dstName, body.str);
+                        if(Server_Invite_Client_Ack(clientList[searchClientIdx].fd, head.srcName, head.dstName, body.str) == SERVER_FAIL){
+                            printf("Send Invite Client Ack Fail.\n");
+                        }
                         printf("send Invite Complete.\n");
                     }
                     else if (msgType == PACKET_TYPE_STR_REQ)
@@ -566,6 +576,7 @@ int main(void)
                         char msg[1024];
                         int letteringIdx;
                         strcpy(client, head.srcName);
+                        memset(msg, 0x00, sizeof(msg));
                         if ((letteringIdx = Lettering_Search_List(client)) >= 0)
                         {
                             sprintf(msg, "[%s]", lettering[letteringIdx].dstName);
@@ -576,7 +587,9 @@ int main(void)
                         {
                             if (clientList[i].fd != chatRoomList[curChatRoom][j])
                             {   
-                                Server_Chat_Request(chatRoomList[curChatRoom][j], head.srcName, msg);
+                                if(Server_Chat_Request(chatRoomList[curChatRoom][j], head.srcName, msg) == SERVER_FAIL){
+                                    printf("Send Chat Req Fail.\n");
+                                }
                             }
                         }
                     }
@@ -584,7 +597,9 @@ int main(void)
                     {
                         if(MallocQ->head != NULL && MallocQ->head->type == msgType)
                         {
-                            Queue_Pop_Front();
+                            if(Queue_Pop_Front() == QUEUE_FAIL){
+                                printf("Pop Fail.\n");
+                            }
                         }
                         
                         int ackClientIdx = Server_Search_Client(head.dstName);
@@ -606,7 +621,9 @@ int main(void)
 
                         if (chatRoomAck[chatRoomIdx] >= chatRoomList[chatRoomIdx][0])
                         {
-                            Server_Chat_Ack(clientList[recvAckClientIdx].fd, head.srcName, head.dstName);
+                            if(Server_Chat_Ack(clientList[recvAckClientIdx].fd, head.srcName, head.dstName) == SERVER_FAIL){
+                                printf("Send Chat Ack Fail.\n");
+                            }
                         }
                     }
                     else if (msgType == PACKET_TYPE_EXIT_REQ)
@@ -627,7 +644,9 @@ int main(void)
                     {
                         if(MallocQ->head != NULL && MallocQ->head->type == msgType)
                         {
-                            Queue_Pop_Front();
+                            if(Queue_Pop_Front() == QUEUE_FAIL){
+                                printf("Pop Fail.\n");
+                            }
                         }
                     }
                     else if (msgType == PACKET_TYPE_EXIT_ACK)
@@ -642,7 +661,9 @@ int main(void)
                         if (clientList[i].isPing == 1 && MallocQ->head != NULL && Queue_front()->type == PACKET_TYPE_PING_ACK)
                         {
                             clientList[i].isPing = 0;
-                            Queue_Pop_Front();
+                            if(Queue_Pop_Front() == QUEUE_FAIL){
+                                printf("Pop Fail.\n");
+                            }
                             printf("[%s] is Still Alive.\n", clientList[i].name);
                         }
                     }

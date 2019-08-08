@@ -111,14 +111,14 @@ int main(void)
             }
             char tmpStr[1024];
             fgets(tmpStr, 1024, stdin);
-            if (isConnected == 1 && isChat == 0 && isCommand == 1)
-            {
-                printf("[%s]Command :: ", myName);
-            }
-            if (isConnected == 1 && isChat == 1 && isCommand == 1)
-            {
-                printf("[%s]Message :: ", myName);
-            }
+            // if (isConnected == 1 && isChat == 0 && isCommand == 1)
+            // {
+            //     printf("[%s]Command :: ", myName);
+            // }
+            // if (isConnected == 1 && isChat == 1 && isCommand == 1)
+            // {
+            //     printf("[%s]Message :: ", myName);
+            // }
             if (strcmp(tmpStr, "SignUp\n") == 0)
             {
                 char name[20];

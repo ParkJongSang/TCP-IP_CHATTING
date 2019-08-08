@@ -31,7 +31,10 @@ int Client_Connect_To_Server(int sockFd, char *self)
     {
         return CLIENT_FAIL;
     }
-    Queue_Push_Back(self, PACKET_TYPE_CONN_ACK, curTime);
+    
+    if(Queue_Push_Back(self, PACKET_TYPE_CONN_ACK, curTime) == QUEUE_FAIL){
+        printf("Queue Push Fail.\n");
+    }
 
     return CLIENT_SUCCESS;
 }
@@ -93,7 +96,9 @@ int Client_Sign_Up(int sockFd, char *self)
         return CLIENT_FAIL;
     }
 
-    Queue_Push_Back(self, PACKET_TYPE_SIGN_UP_ACK, curTime);
+    if(Queue_Push_Back(self, PACKET_TYPE_SIGN_UP_ACK, curTime) == QUEUE_FAIL){
+        printf("Queue Push Fail.\n");
+    }
 
     return CLIENT_SUCCESS;
 }
@@ -127,7 +132,9 @@ int Client_Chat_Request(int sockFd, char *self, char *message)
         return CLIENT_FAIL;
     }
     
-    Queue_Push_Back(self, PACKET_TYPE_STR_ACK, curTime);
+    if(Queue_Push_Back(self, PACKET_TYPE_STR_ACK, curTime) == QUEUE_FAIL){
+        printf("Queue Push Fail.\n");
+    }
 
     return CLIENT_SUCCESS;
 }
@@ -187,7 +194,9 @@ int Client_Exit_Request(int sockFd, char *self)
         return CLIENT_FAIL;
     }
 
-    Queue_Push_Back(self, PACKET_TYPE_EXIT_ACK, curTime);
+    if(Queue_Push_Back(self, PACKET_TYPE_EXIT_ACK, curTime) == QUEUE_FAIL){
+        printf("Queue Push Fail.\n");
+    }
 
     return CLIENT_SUCCESS;
 }
@@ -218,7 +227,9 @@ int Client_Create_ChatRoom(int sockFd, char *self)
         return CLIENT_FAIL;
     }
 
-    Queue_Push_Back(self, PACKET_TYPE_EXIT_ACK, curTime);
+    if(Queue_Push_Back(self, PACKET_TYPE_EXIT_ACK, curTime) == QUEUE_FAIL){
+        printf("Queue Push Fail.\n");
+    }
 
     return CLIENT_SUCCESS;
 }
@@ -279,7 +290,9 @@ int Client_Invite_Client_Request(int sockFd, char *self, char *another)
         return CLIENT_FAIL;
     }
 
-    Queue_Push_Back(self, PACKET_TYPE_INVITE_ACK, curTime);
+    if(Queue_Push_Back(self, PACKET_TYPE_INVITE_ACK, curTime) == QUEUE_FAIL){
+        printf("Queue Push Fail.\n");
+    }
 
     return CLIENT_SUCCESS;
 }
@@ -340,7 +353,9 @@ int Client_Exit_Chat_Room_Request(int sockFd, char *self)
         return CLIENT_FAIL;
     }
 
-    Queue_Push_Back(self, PACKET_TYPE_EXIT_CHATROOM_ACK, curTime);
+    if(Queue_Push_Back(self, PACKET_TYPE_EXIT_CHATROOM_ACK, curTime) == QUEUE_FAIL){
+        printf("Queue Push Fail.\n");
+    }
 
     return CLIENT_SUCCESS;
 }
@@ -400,7 +415,9 @@ int Client_Add_Lettering(int sockFd, char *self, char *name)
         return CLIENT_FAIL;
     }
 
-    Queue_Push_Back(self, PACKET_TYPE_LETTERING_ADD_ACK, curTime);
+    if(Queue_Push_Back(self, PACKET_TYPE_LETTERING_ADD_ACK, curTime) == QUEUE_FAIL){
+        printf("Queue Push Fail.\n");
+    }
 
     return CLIENT_SUCCESS;
 }
@@ -431,7 +448,9 @@ int Client_Del_Lettering(int sockFd, char *self)
         return CLIENT_FAIL;
     }
 
-    Queue_Push_Back(self, PACKET_TYPE_LETTERING_DEL_ACK, curTime);
+    if(Queue_Push_Back(self, PACKET_TYPE_LETTERING_DEL_ACK, curTime) == QUEUE_FAIL){
+        printF("Queue Push Fail.\n");
+    }
 
     return CLIENT_SUCCESS;
 }
@@ -464,7 +483,9 @@ int Client_Add_Reject_Call(int sockFd, char *self, char *name)
         return CLIENT_FAIL;
     }
 
-    Queue_Push_Back(self, PACKET_TYPE_REJECT_CALL_ADD_ACK, curTime);
+    if(Queue_Push_Back(self, PACKET_TYPE_REJECT_CALL_ADD_ACK, curTime) == QUEUE_FAIL){
+        printf("Queue Push Fail.\n");
+    }
 
     return CLIENT_SUCCESS;
 }
@@ -497,7 +518,9 @@ int Client_Del_Reject_Call(int sockFd, char *self, char *name)
         return CLIENT_FAIL;
     }
 
-    Queue_Push_Back(self, PACKET_TYPE_REJECT_CALL_DEL_ACK, curTime);
+    if(Queue_Push_Back(self, PACKET_TYPE_REJECT_CALL_DEL_ACK, curTime) == QUEUE_FAIL){
+        printf("Queue Push Fail.\n");
+    }
 
     return CLIENT_SUCCESS;
 }
@@ -529,7 +552,9 @@ int Client_Add_Call_Forwarding(int sockFd, char *self, char *name)
         return CLIENT_FAIL;
     }
 
-    Queue_Push_Back(self, PACKET_TYPE_REJECT_CALL_ADD_ACK, curTime);
+    if(Queue_Push_Back(self, PACKET_TYPE_REJECT_CALL_ADD_ACK, curTime) == QUEUE_FAIL){
+        printf("Queue Push Fail.\n");
+    }
 
     return CLIENT_SUCCESS;
 }
@@ -560,7 +585,9 @@ int Client_Del_Call_Forwarding(int sockFd, char *self)
         return CLIENT_FAIL;
     }
 
-    Queue_Push_Back(self, PACKET_TYPE_CALL_FORWARDING_DEL_ACK, curTime);
+    if(Queue_Push_Back(self, PACKET_TYPE_CALL_FORWARDING_DEL_ACK, curTime) == QUEUE_FAIL){
+        printf("Queue Push Fail.\n");
+    }
 
     return CLIENT_SUCCESS;
 }
