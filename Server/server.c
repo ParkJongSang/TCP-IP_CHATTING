@@ -126,7 +126,7 @@ int main(void)
             }
             continue;
         }
-        if(FD_ISSET(0, &reads) && clientListSize == 0);
+        if(FD_ISSET(0, &reads))
         {
             char tmpStr[1024];
             fgets(tmpStr, 1024, stdin);
@@ -184,7 +184,6 @@ int main(void)
                 }else{
                     printf("Change Name is using.\n");
                 }
-
                 User_Save_File();
             }else if(strcmp(tmpStr, "PrintUser\n") == 0){
                 int length = userSize;
