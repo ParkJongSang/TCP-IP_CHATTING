@@ -106,8 +106,8 @@ int main(void)
                 for (i = 0; i < clientListSize; i++)
                 {
                     if(Server_Exit_Request(clientList[i].fd, clientList[i].name) == SERVER_FAIL){
-                    printf("Send Exit Request Fail.\n");
-                }
+                        printf("Send Exit Request Fail.\n");
+                    }
                 }
                 break;
             }
