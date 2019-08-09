@@ -133,7 +133,7 @@ int main(void)
             }
             continue;
         }
-        if(FD_ISSET(0, &reads)cd )
+        if(FD_ISSET(0, &reads))
         {
             char tmpStr[1024];
             fgets(tmpStr, 1024, stdin);
