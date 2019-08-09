@@ -41,6 +41,7 @@ int main(void)
         return -1;
     }
     signal(SIGINT, Server_Siging_Handler);
+    signal(SIGPIPE, SIG_IGN);
     memset(&listenSocket, 0x00, sizeof(listenSocket));
     memset(&body, 0x00, sizeof(body));
     memset(&head, 0x00, sizeof(head));
@@ -689,7 +690,7 @@ int main(void)
                     }
                     else if (msgType == PACKET_TYPE_PING_ACK)
                     {
-                        if (clientList[i].isPing == 1 && MallocQ->head != NULL && MallocQ->head->type == PACKET_TYPE_PING_ACK)
+                        if (clientList[i].isPing == 1 && MallocQ->head != NULL && MallocQ->head->type == PACKET_TYPE_PING_ACK && strcmp(MallocQ->head->name, clientList[i].name) == 0)
                         {
                             clientList[i].isPing = 0;
                             if(Queue_Pop_Front() == QUEUE_FAIL){
