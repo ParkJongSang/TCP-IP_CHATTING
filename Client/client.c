@@ -68,7 +68,6 @@ int main(void)
         int timeOverPacektType = -1;
         timeout.tv_sec = 0;
         timeout.tv_usec = 5000;
-        fflush(stdin);
 
         if (isConnected == 0 && retryFlag == 1 && retryCnt < 3)
         {
@@ -269,6 +268,13 @@ int main(void)
                         printf("Exit Chatroom Req Fail.\n");
                     }
                 }
+                else if (strcmp(tmpStr, "!User\n") == 0)
+                {
+                    if(Client_All_Ueser_Request(connectFD, client) == CLIENT_FAIL)
+                    {
+                        printf("All User Request Fail.\n");
+                    }
+                }
                 else if (strcmp(tmpStr, "\n") == 0)
                 {
                     continue;
@@ -314,7 +320,6 @@ int main(void)
             /* WAIT ACK */
             if (msgType == PACKET_TYPE_SIGN_UP_ACK)
             {
-                printf("recv SingUp Ack\n");
                 if (MallocQ->head != NULL && MallocQ->head->type == msgType)
                 {
                     if (Queue_Pop_Front() == QUEUE_FAIL)
@@ -335,7 +340,6 @@ int main(void)
             }
             else if (msgType == PACKET_TYPE_EXIT_ACK)
             {
-                printf("recv Exit Ack.\n");
                 if (MallocQ->head != NULL && MallocQ->head->type == msgType)
                 {
                     if (Queue_Pop_Front() == QUEUE_FAIL)
@@ -349,7 +353,6 @@ int main(void)
             }
             else if (msgType == PACKET_TYPE_LETTERING_ADD_ACK)
             {
-                printf("recv LETTERING Ack\n");
                 if (MallocQ->head != NULL && MallocQ->head->type == msgType)
                 {
                     if (Queue_Pop_Front() == QUEUE_FAIL)
@@ -390,7 +393,6 @@ int main(void)
             }
             else if (msgType == PACKET_TYPE_REJECT_CALL_ADD_ACK)
             {
-                printf("recv Reject Ack\n");
                 if (MallocQ->head != NULL && MallocQ->head->type == msgType)
                 {
                     if (Queue_Pop_Front() == QUEUE_FAIL)
@@ -411,7 +413,6 @@ int main(void)
             }
             else if (msgType == PACKET_TYPE_CONN_ACK)
             {
-                printf("recv Connect Ack\n");
                 if (MallocQ->head != NULL && MallocQ->head->type == msgType)
                 {
                     if (Queue_Pop_Front() == QUEUE_FAIL)
@@ -433,7 +434,6 @@ int main(void)
             }
             else if (MallocQ->head != NULL && msgType == PAKCET_TYPE_CREATE_CHATROOM_ACK)
             {
-                printf("recv Create ChatRoom Ack\n");
                 if (MallocQ->head != NULL && MallocQ->head->type == msgType)
                 {
                     if (Queue_Pop_Front() == QUEUE_FAIL)
@@ -446,7 +446,6 @@ int main(void)
             }
             else if (MallocQ->head != NULL && msgType == PACKET_TYPE_EXIT_CHATROOM_ACK)
             {
-                printf("recv Exit Ack\n");
                 if (MallocQ->head != NULL && MallocQ->head->type == msgType)
                 {
                     if (Queue_Pop_Front() == QUEUE_FAIL)
@@ -466,7 +465,6 @@ int main(void)
             }
             else if (MallocQ->head != NULL && msgType == PACKET_TYPE_INVITE_ACK)
             {
-                printf("recv Invite Ack\n");
                 if (MallocQ->head != NULL && MallocQ->head->type == msgType)
                 {
                     if (Queue_Pop_Front() == QUEUE_FAIL)
@@ -483,6 +481,16 @@ int main(void)
                     printf("[%s] %s\n", head.dstName, body.str);
                     printf("[%s] Invite Fail.\n", head.dstName);
                 }
+            }
+            else if(MallocQ->head != NULL && msgType == PACKET_TYPE_ALL_USER_ACK){
+                if (MallocQ->head != NULL && MallocQ->head->type == msgType)
+                {
+                    if (Queue_Pop_Front() == QUEUE_FAIL)
+                    {
+                        printf("Queue Pop Fail.\n");
+                    }
+                }
+                printf("%s", body.str);
             }
 
             /* Receive Request */

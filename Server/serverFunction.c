@@ -565,6 +565,35 @@ int Server_Del_Call_Forwarding_Ack(int sockFd, char *client)
     return SERVER_SUCCESS;
 }
 
+int Server_All_User_Ack(int sockFd, char *client, char *msg){
+    if (client == NULL || strlen(client) == 0 || msg == NULL || strlen(msg) == 0)
+    {
+        return SERVER_FAIL;
+    }
+
+    size_t writeByte;
+    packetHead_t head;
+    packetBody_t body;
+
+    strcpy(head.srcName, client);
+    head.time = htonl(time(NULL));
+    head.type = htonl(PACKET_TYPE_ALL_USER_ACK);
+    head.bodyLength = htonl(strlen(msg));
+
+    strcpy(body.str, msg);
+
+    if ((writeByte = writePacket(sockFd, &head, sizeof(head))) != sizeof(head))
+    {
+        return SERVER_FAIL;
+    }
+    if ((writeByte = writePacket(sockFd, &body, strlen(msg))) != strlen(msg))
+    {
+        return SERVER_FAIL;
+    }
+
+    return SERVER_SUCCESS;
+}
+
 int Server_Search_Client(char *client)
 {
     if (client == NULL || strlen(client) == 0)
@@ -704,7 +733,7 @@ int Server_Check_Client_Time_Over(long curTime)
                 return SERVER_FAIL;
             }
             clientList[i].isPing = 1;
-            printf("Send Ping.\n");
+            printf("[%s] Send Ping.\n", clientList[i].name);
         }
     }
     return SERVER_SUCCESS;

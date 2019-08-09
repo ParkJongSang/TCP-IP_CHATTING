@@ -29,6 +29,7 @@ int Client_Invite_Client_Ack(int sockFd, char *self, char *another, char *msg);
 int Client_Exit_Chat_Room_Request(int sockFd, char *self);
 int Client_Exit_Chat_Room_Ack(int sockFd, char *self);
 int Client_Alram_Ack(int sockFd, char* self);
+int Client_All_Ueser_Request(int sockFd, char *self);
 
 int Client_Add_Lettering(int sockFd, char *self, char *name);
 int Client_Del_Lettering(int sockFd, char *self);

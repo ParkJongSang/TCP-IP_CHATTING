@@ -41,6 +41,7 @@ int Server_Invite_Client_Request(int sockFd, char *client_1, char *client_2);
 int Server_Invite_Client_Ack(int sockFd, char *client_1, char *client_2, char *msg);
 int Server_Exit_Chat_Romm_Ack(int sockFd, char *client);
 int Server_Alram_Request(int sockFd, char *msg);
+int Server_All_User_Ack(int sockFd, char *client, char *msg);
 
 int Server_Add_Lettering_Ack(int sockFd, char *client);
 int Server_Del_Lettering_Ack(int sockFd, char *client);

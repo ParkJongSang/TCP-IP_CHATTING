@@ -617,3 +617,35 @@ void Client_Sigint_Handler(int signo)
 {
     IS_SIG = 1;
 }
+
+int Client_All_Ueser_Request(int sockFd, char *self){
+    if (self == NULL || strlen(self) == 0 || self == NULL || strlen(self) == 0)
+    {
+        return CLIENT_FAIL;
+    }
+
+    size_t writeByte;
+    packetHead_t head;
+    packetBody_t body;
+    long curTime = time(NULL);
+
+    strcpy(head.srcName, self);
+    head.time = htonl(curTime);
+    head.type = htonl(PACKET_TYPE_ALL_USER_REQ);
+    head.bodyLength = htonl(0);
+
+    if ((writeByte = writePacket(sockFd, &head, sizeof(head))) != sizeof(head))
+    {
+        return CLIENT_FAIL;
+    }
+    if ((writeByte = writePacket(sockFd, &body, 0)) != 0)
+    {
+        return CLIENT_FAIL;
+    }
+
+    if(Queue_Push_Back(self, PACKET_TYPE_ALL_USER_ACK, curTime) == QUEUE_FAIL){
+        printf("Queue Push Fail.\n");
+    }
+
+    return CLIENT_SUCCESS;
+}
