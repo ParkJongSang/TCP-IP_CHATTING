@@ -8,7 +8,6 @@ int main(void)
     long timeWait = 0;
     int isConnected = 0;
     int isChat = 0;
-    int isCommand = 1;
     int retryCnt = 0;
     int retryFlag = 0;
     int connectRetryCnt = 0;
@@ -26,13 +25,19 @@ int main(void)
     memset(&head, 0x00, sizeof(head));
 
     IS_SIG = 0;
-    signal(SIGINT, Client_Sigint_Handler);
-
+    if(signal(SIGINT, Client_Sigint_Handler) < 0){
+        printf("Set Signal Handler(SIGING) Error.\n");
+    }
+    if(signal(SIGPIPE, SIG_IGN) < 0){
+        printf("Set Signal Hnadler(SIGPIPE) Error.\n");
+    }
     connectSocket.sin_family = AF_INET;
     inet_aton("127.0.0.1", (struct in_addr *)&connectSocket.sin_addr.s_addr);
     connectSocket.sin_port = htons(10000);
     connectFD = socket(AF_INET, SOCK_STREAM, 0);
-    fcntl(connectFD, F_SETFL, O_NONBLOCK);
+    if(fcntl(connectFD, F_SETFL, O_NONBLOCK) < 0){
+        printf("Set Socket Function(NON_BLOCK) Error.\n");
+    }
     while (connect(connectFD, (struct sockaddr *)&connectSocket, sizeof(connectSocket)) == -1 && connectRetryCnt < 3)
     {
         if (errno == EISCONN)
@@ -72,7 +77,9 @@ int main(void)
         if (isConnected == 0 && retryFlag == 1 && retryCnt < 3)
         {
             printf("[%s]Retry.\n", tryId);
-            Client_Connect_To_Server(connectFD, tryId);
+            if(Client_Connect_To_Server(connectFD, tryId) == CLIENT_FAIL){
+                printf("Connect To Server Error.\n");
+            }
         }
         retryFlag = 0;
         FD_ZERO(&reads);
@@ -167,7 +174,9 @@ int main(void)
                 char tmpId[20];
                 printf("ID :: ");
                 scanf("%s", tmpId);
-                strcpy(tryId, tmpId);
+                if(strcpy(tryId, tmpId) == NULL){
+                    printf("(%d)Dest String Pointer Is NULL.\n", __LINE__);
+                }
                 if (Client_Connect_To_Server(connectFD, tryId) == CLIENT_FAIL)
                 {
                     printf("Connect Req Fail.\n");
@@ -239,8 +248,9 @@ int main(void)
             else if (isConnected == 1 && isChat == 0 && strcmp(tmpStr, "Create\n") == 0)
             {
                 char client[20];
-                strcpy(client, myName);
-                isCommand = 0;
+                if(strcpy(client, myName) == NULL){
+                    printf("(%d)Dest String Pointer Is NULL.\n", __LINE__);
+                }
                 if (Client_Create_ChatRoom(connectFD, client) == CLIENT_FAIL)
                 {
                     printf("Create Chatromm Req Fail.\n");
@@ -250,7 +260,9 @@ int main(void)
             {
                 char client[20];
                 char tmpMsg[1024];
-                strcpy(client, myName);
+                if(strcpy(client, myName) == NULL){
+                    printf("(%d)Dest String Pointer Is NULL.\n", __LINE__);
+                }
                 if (strcmp(tmpStr, "!Invite\n") == 0)
                 {
                     printf("Invite Name :: ");
@@ -303,6 +315,7 @@ int main(void)
             memset(&body, 0x00, sizeof(body));
             if ((readBytes = readPacket(connectFD, &head, sizeof(head))) != sizeof(head))
             {
+                printf("Read Header Error.\n");
                 continue;
             }
             if (readBytes == 0)
@@ -312,6 +325,7 @@ int main(void)
             }
             if ((readBytes = readPacket(connectFD, &body, ntohl(head.bodyLength))) != ntohl(head.bodyLength))
             {
+                printf("Read Body Error.\n");
                 continue;
             }
 
@@ -425,7 +439,9 @@ int main(void)
                     isConnected = 1;
                     retryCnt = 0;
                     printf("Welcome %s\n", head.dstName);
-                    strcpy(myName, head.dstName);
+                    if(strcpy(myName, head.dstName) == NULL){
+                        printf("(%d)Dest String Pointer Is NULL.\n", __LINE__);
+                    }
                 }
                 else
                 {
@@ -441,7 +457,6 @@ int main(void)
                         printf("Queue Pop Fail.\n");
                     }
                 }
-                isCommand = 1;
                 isChat = 1;
             }
             else if (MallocQ->head != NULL && msgType == PACKET_TYPE_EXIT_CHATROOM_ACK)
