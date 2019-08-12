@@ -25,17 +25,20 @@ int main(void)
     memset(&head, 0x00, sizeof(head));
 
     IS_SIG = 0;
-    if(signal(SIGINT, Client_Sigint_Handler) < 0){
+    if (signal(SIGINT, Client_Sigint_Handler) < 0)
+    {
         printf("Set Signal Handler(SIGING) Error.\n");
     }
-    if(signal(SIGPIPE, SIG_IGN) < 0){
+    if (signal(SIGPIPE, SIG_IGN) < 0)
+    {
         printf("Set Signal Hnadler(SIGPIPE) Error.\n");
     }
     connectSocket.sin_family = AF_INET;
     inet_aton("127.0.0.1", (struct in_addr *)&connectSocket.sin_addr.s_addr);
     connectSocket.sin_port = htons(10000);
     connectFD = socket(AF_INET, SOCK_STREAM, 0);
-    if(fcntl(connectFD, F_SETFL, O_NONBLOCK) < 0){
+    if (fcntl(connectFD, F_SETFL, O_NONBLOCK) < 0)
+    {
         printf("Set Socket Function(NON_BLOCK) Error.\n");
     }
     while (connect(connectFD, (struct sockaddr *)&connectSocket, sizeof(connectSocket)) == -1 && connectRetryCnt < 3)
@@ -77,7 +80,8 @@ int main(void)
         if (isConnected == 0 && retryFlag == 1 && retryCnt < 3)
         {
             printf("[%s]Retry.\n", tryId);
-            if(Client_Connect_To_Server(connectFD, tryId) == CLIENT_FAIL){
+            if (Client_Connect_To_Server(connectFD, tryId) == CLIENT_FAIL)
+            {
                 printf("Connect To Server Error.\n");
             }
         }
@@ -117,7 +121,7 @@ int main(void)
             }
             char tmpStr[1024];
             fgets(tmpStr, 1024, stdin);
-            if(strcmp(tmpStr, "Help\n") == 0 || strcmp(tmpStr, "help\n") == 0)
+            if (strcmp(tmpStr, "Help\n") == 0 || strcmp(tmpStr, "help\n") == 0)
             {
                 printf("=====Introduce Command=====\n");
                 printf("1. SignUp - Sign Up this Service\n");
@@ -174,7 +178,8 @@ int main(void)
                 char tmpId[20];
                 printf("ID :: ");
                 scanf("%s", tmpId);
-                if(strcpy(tryId, tmpId) == NULL){
+                if (strcpy(tryId, tmpId) == NULL)
+                {
                     printf("(%d)Dest String Pointer Is NULL.\n", __LINE__);
                 }
                 if (Client_Connect_To_Server(connectFD, tryId) == CLIENT_FAIL)
@@ -248,7 +253,8 @@ int main(void)
             else if (isConnected == 1 && isChat == 0 && strcmp(tmpStr, "Create\n") == 0)
             {
                 char client[20];
-                if(strcpy(client, myName) == NULL){
+                if (strcpy(client, myName) == NULL)
+                {
                     printf("(%d)Dest String Pointer Is NULL.\n", __LINE__);
                 }
                 if (Client_Create_ChatRoom(connectFD, client) == CLIENT_FAIL)
@@ -260,7 +266,8 @@ int main(void)
             {
                 char client[20];
                 char tmpMsg[1024];
-                if(strcpy(client, myName) == NULL){
+                if (strcpy(client, myName) == NULL)
+                {
                     printf("(%d)Dest String Pointer Is NULL.\n", __LINE__);
                 }
                 if (strcmp(tmpStr, "!Invite\n") == 0)
@@ -282,7 +289,7 @@ int main(void)
                 }
                 else if (strcmp(tmpStr, "!User\n") == 0)
                 {
-                    if(Client_All_Ueser_Request(connectFD, client) == CLIENT_FAIL)
+                    if (Client_All_Ueser_Request(connectFD, client) == CLIENT_FAIL)
                     {
                         printf("All User Request Fail.\n");
                     }
@@ -439,7 +446,8 @@ int main(void)
                     isConnected = 1;
                     retryCnt = 0;
                     printf("Welcome %s\n", head.dstName);
-                    if(strcpy(myName, head.dstName) == NULL){
+                    if (strcpy(myName, head.dstName) == NULL)
+                    {
                         printf("(%d)Dest String Pointer Is NULL.\n", __LINE__);
                     }
                 }
@@ -497,7 +505,8 @@ int main(void)
                     printf("[%s] Invite Fail.\n", head.dstName);
                 }
             }
-            else if(MallocQ->head != NULL && msgType == PACKET_TYPE_ALL_USER_ACK){
+            else if (MallocQ->head != NULL && msgType == PACKET_TYPE_ALL_USER_ACK)
+            {
                 if (MallocQ->head != NULL && MallocQ->head->type == msgType)
                 {
                     if (Queue_Pop_Front() == QUEUE_FAIL)
@@ -521,12 +530,12 @@ int main(void)
             {
                 isChat = 0;
                 isConnected = 0;
-                
+
                 if (Client_Exit_Ack(connectFD, myName) == CLIENT_FAIL)
                 {
                     printf("Send Exit Ack Fail.\n");
                 }
-                
+
                 memset(myName, 0x00, sizeof(myName));
                 break;
             }
