@@ -680,7 +680,22 @@ void Server_Check_Packet_Time_Over(long curTime)
     Node *cursor = NULL;
     Node *temp = NULL;
     int isPop = 0;
+
+    size_t writeByte;
+    packetHead_t head;
+    packetBody_t body;
+
     cursor = MallocQ->head;
+    while (cursor != NULL && cursor -> isRemove == 1){
+        cursor -> isRemove = 0;
+        printf("[%s]Pop Packet : %d.\n", cursor->name, cursor->type);
+        if(Queue_Pop_Front() == QUEUE_FAIL){
+            printf("Queue pop Fail.\n");
+        }
+        cursor = cursor -> next;
+    }
+
+    cursor = MallocQ -> head;
     while (cursor != NULL)
     {
         if (curTime - (cursor->time) > 5)
@@ -688,10 +703,32 @@ void Server_Check_Packet_Time_Over(long curTime)
             temp = Queue_front();
             if (temp->type == PACKET_TYPE_PING_ACK)
             {
+                printf("Send Exit Request.\n");
                 int idx = Server_Search_Client(temp->name);
                 if (idx < 0)
                 {
-                    printf("Cannot Search.\n");
+                    printf("Cannot Search.");
+                    if(Queue_Pop_Front() == QUEUE_FAIL){
+                        printf("Invail Packet Pop.\n");
+                    }
+                    break;
+                }
+                if(clientList[idx].isPing < 3){
+                    clientList[idx].isPing += 1;
+                    memset(&head, 0x00, sizeof(head));
+                    memset(&body, 0x00, sizeof(body));
+                    head.type = htonl(PACKET_TYPE_PING_REQ);
+                    head.time = htonl(cursor->time);
+                    head.bodyLength = htonl(0);
+
+                    if ((writeByte = writePacket(clientList[idx].fd, &head, sizeof(head))) != sizeof(head))
+                    {
+                        printf("Write Header Error.\n");
+                    }
+                    if ((writeByte = writePacket(clientList[idx].fd, &body, 0)) != 0)
+                    {
+                        printf("Write Body Error.\n");
+                    }
                     break;
                 }
                 if (Server_Exit_Request(clientList[idx].fd, clientList[idx].name) == SERVER_FAIL)
@@ -702,20 +739,41 @@ void Server_Check_Packet_Time_Over(long curTime)
             }
             printf("[%d]TimeOut PACKET OUT.\n", temp->type);
             if(MallocQ -> head != NULL){
-                if(Queue_Pop_Front() == QUEUE_FAIL){
-                    printf("Queue Pop Fail.\n");
-                }
+                    if(Queue_Pop_Front() == QUEUE_FAIL){
+                        printf("Queue Pop Fail.\n");
+                    }
             }
             isPop = 1;
-        }
-        if (isPop == 1)
-        {
-            cursor = cursor->next;
-            cursor->time = curTime;
+            break;
         }
         else
         {
             break;
+        }
+    }
+    if(isPop == 1){
+        cursor = MallocQ->head;
+        while(cursor != NULL){
+            cursor -> time = curTime;
+            int clientIdx = -1;
+            memset(&head, 0x00, sizeof(head));
+            memset(&body, 0x00, sizeof(body));
+            clientIdx = Server_Search_Client(cursor->name);
+            if(clientIdx >= 0 && cursor -> type == PACKET_TYPE_PING_ACK){
+                head.type = htonl(PACKET_TYPE_PING_REQ);
+                head.time = htonl(cursor->time);
+                head.bodyLength = htonl(0);
+                printf("[%s] : Send %d.\n", cursor->name, (cursor->type)-1);
+                if ((writeByte = writePacket(clientList[clientIdx].fd, &head, sizeof(head))) != sizeof(head))
+                {
+                    printf("Write Header Error.\n");
+                }
+                if ((writeByte = writePacket(clientList[clientIdx].fd, &body, 0)) != 0)
+                {
+                    printf("Write Body Error.\n");
+                }
+            }                       
+            cursor = cursor -> next;
         }
     }
 }

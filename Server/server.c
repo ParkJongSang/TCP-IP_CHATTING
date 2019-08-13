@@ -83,7 +83,8 @@ int main(void)
         int fdNum = 0;
         int i = 0;
         long curTime = 0;
-        if((curTime = time(NULL)) < 0){
+        if ((curTime = time(NULL)) < 0)
+        {
             printf("Get Current Time Error.\n");
         }
         int fdMax = listenFD;
@@ -749,10 +750,11 @@ int main(void)
                 }
                 else if (msgType == PACKET_TYPE_STR_ACK)
                 {
-                    if (MallocQ->head != NULL && MallocQ->head->type == msgType)
-                    {
-                        if (Queue_Pop_Front() == QUEUE_FAIL)
-                        {
+                    printf("Receive Str Ack.\n");
+                    printf("[%s] Head Type : %d.\n",MallocQ->head->name, MallocQ->head->type);
+                                                 
+                    if(MallocQ->head != NULL && MallocQ->head->type == msgType){
+                        if(Queue_Pop_Front() == QUEUE_FAIL){
                             printf("Pop Fail.\n");
                         }
                     }
@@ -851,13 +853,13 @@ int main(void)
             }
         }
     }
-}
-int i = 0;
-for (i = 0; i < clientListSize; i++)
-{
-    close(clientList[i].fd);
-}
-Queue_Free();
-close(listenFD);
-return 0;
+
+    int i = 0;
+    for (i = 0; i < clientListSize; i++)
+    {
+        close(clientList[i].fd);
+    }
+    Queue_Free();
+    close(listenFD);
+    return 0;
 }
