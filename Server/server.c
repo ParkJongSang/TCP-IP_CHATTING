@@ -82,7 +82,10 @@ int main(void)
     {
         int fdNum = 0;
         int i = 0;
-        long curTime = time(NULL);
+        long curTime = 0;
+        if((curTime = time(NULL)) < 0){
+            printf("Get Current Time Error.\n");
+        }
         int fdMax = listenFD;
 
         timeout.tv_sec = 0;
@@ -135,7 +138,7 @@ int main(void)
             {
                 printf("Client Time Check Fail.\n");
             }
-            Server_Check_Packet_Time_Over(time(NULL));
+            Server_Check_Packec t_Time_Over(time(NULL));
             if (IS_SIG == 1)
             {
                 for (i = 0; i < clientListSize; i++)
