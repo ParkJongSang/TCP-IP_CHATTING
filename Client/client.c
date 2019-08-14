@@ -87,10 +87,12 @@ int main(void)
                 printf("Connect To Server Error.\n");
             }
         }
+
         retryFlag = 0;
         FD_ZERO(&reads);
         FD_SET(0, &reads);
         FD_SET(connectFD, &reads);
+
         if ((fdNum = select(fdMax + 1, &reads, 0, 0, &timeout)) == -1)
         {
             if (IS_SIG == 1)
@@ -115,6 +117,7 @@ int main(void)
             }
             continue;
         }
+
         if (FD_ISSET(0, &reads))
         {
             while (time(NULL) - timeWait < 1)
