@@ -65,7 +65,6 @@ int main(void)
     {
         printF("Set Socket Function(NON_BLOCK) Error.\n");
     }
-
     if (bind(listenFD, (struct sockaddr *)&listenSocket, sizeof(listenSocket)) == -1)
     {
         perror("[BIND]");
@@ -263,24 +262,24 @@ int main(void)
                 sleep(0.5);
             }
             sprintf(tmpId, "unknown%d", clientListSize);
-            if (Server_Add_Client_List(connectFD, tmpId, time(NULL)) == SERVER_FAIL)
-
+            if (Server_Add_Client_List(connectFD, tmpId, time(NULL)) == SERVER_FAIL){
                 printf("add Fail.\n");
-        }
-        if (fcntl(connectFD, F_SETFL, O_NONBLOCK) == -1)
-        {
-            printf("FCNTL ERROR.\n");
-        }
-        printf("[CONNECTED] : %s CLIENT\n", tmpId);
-        fdNum -= 1;
-
-        if (clientListSize > 10)
-        {
-            if (Server_Exit_Request(connectFD, tmpId) == USER_FAIL)
-            {
-                printf("Send Exit Req Fail.\n");
             }
-            continue;
+            if (fcntl(connectFD, F_SETFL, O_NONBLOCK) == -1)
+            {
+                printf("FCNTL ERROR.\n");
+            }
+            printf("[CONNECTED] : %s CLIENT\n", tmpId);
+            fdNum -= 1;
+
+            if (clientListSize > 10)
+            {
+                if (Server_Exit_Request(connectFD, tmpId) == USER_FAIL)
+                {
+                    printf("Send Exit Req Fail.\n");
+                }
+                continue;
+            }
         }
     }
 

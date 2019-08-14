@@ -25,6 +25,7 @@ int main(void)
     memset(&head, 0x00, sizeof(head));
 
     IS_SIG = 0;
+    
     if (signal(SIGINT, Client_Sigint_Handler) < 0)
     {
         printf("Set Signal Handler(SIGING) Error.\n");
@@ -33,6 +34,7 @@ int main(void)
     {
         printf("Set Signal Hnadler(SIGPIPE) Error.\n");
     }
+
     connectSocket.sin_family = AF_INET;
     inet_aton("127.0.0.1", (struct in_addr *)&connectSocket.sin_addr.s_addr);
     connectSocket.sin_port = htons(10000);

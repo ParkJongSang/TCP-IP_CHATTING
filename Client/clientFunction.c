@@ -520,6 +520,7 @@ int Client_Del_Reject_Call(int sockFd, char *self, char *name)
 
     return CLIENT_SUCCESS;
 }
+
 int Client_Add_Call_Forwarding(int sockFd, char *self, char *name)
 {
     if (self == NULL || strlen(self) == 0 || name == NULL || strlen(name) == 0)
@@ -618,7 +619,8 @@ void Client_Sigint_Handler(int signo)
     IS_SIG = 1;
 }
 
-int Client_All_Ueser_Request(int sockFd, char *self){
+int Client_All_Ueser_Request(int sockFd, char *self)
+{
     if (self == NULL || strlen(self) == 0 || self == NULL || strlen(self) == 0)
     {
         return CLIENT_FAIL;

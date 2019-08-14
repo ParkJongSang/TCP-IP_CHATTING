@@ -431,6 +431,7 @@ int Server_Add_Lettering_Ack(int sockFd, char *client)
 
     return SERVER_SUCCESS;
 }
+
 int Server_Del_Lettering_Ack(int sockFd, char *client)
 {
     if (client == NULL || strlen(client) == 0)
@@ -458,6 +459,7 @@ int Server_Del_Lettering_Ack(int sockFd, char *client)
 
     return SERVER_SUCCESS;
 }
+
 int Server_Add_Reject_Call_Ack(int sockFd, char *client)
 {
     if (client == NULL || strlen(client) == 0)
@@ -485,6 +487,7 @@ int Server_Add_Reject_Call_Ack(int sockFd, char *client)
 
     return SERVER_SUCCESS;
 }
+
 int Server_Del_Reject_Call_Ack(int sockFd, char *client)
 {
     if (client == NULL || strlen(client) == 0)
@@ -510,6 +513,7 @@ int Server_Del_Reject_Call_Ack(int sockFd, char *client)
         return SERVER_FAIL;
     }
 }
+
 int Server_Add_Call_Forwarding_Ack(int sockFd, char *client)
 {
     if (client == NULL || strlen(client) == 0)
@@ -537,6 +541,7 @@ int Server_Add_Call_Forwarding_Ack(int sockFd, char *client)
 
     return SERVER_SUCCESS;
 }
+
 int Server_Del_Call_Forwarding_Ack(int sockFd, char *client)
 {
     if (client == NULL || strlen(client) == 0)
@@ -565,7 +570,8 @@ int Server_Del_Call_Forwarding_Ack(int sockFd, char *client)
     return SERVER_SUCCESS;
 }
 
-int Server_All_User_Ack(int sockFd, char *client, char *msg){
+int Server_All_User_Ack(int sockFd, char *client, char *msg)
+{
     if (client == NULL || strlen(client) == 0 || msg == NULL || strlen(msg) == 0)
     {
         return SERVER_FAIL;
